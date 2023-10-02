@@ -23,6 +23,12 @@
     "paths": {
       "@ui/*":[
         "src/ui/*"
+      ], 
+      "@db-crud-objetos": [
+        "core/crud.ts"
+      ],
+      "@server/*": [
+        "src/server/*"
       ]
     }
   },

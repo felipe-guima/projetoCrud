@@ -1,68 +1,78 @@
 import React from "react";
 import { GlobalStyles } from "@ui/theme/GlobalStyles";
+import { objetoController } from "@ui/controller/objeto";
 
 const bg = "https://mariosouto.com/cursos/crudcomqualidade/bg";
 
-export default function Page() {
-    return (
-        <main>
-            <GlobalStyles themeName="devsoutinho" />
-            <header
-                style={{
-                    backgroundImage: `url('${bg}')`,
-                }}
-            >
-                <div className="typewriter">
-                    <h1>O que fazer hoje?</h1>
-                </div>
-                <form>
-                    <input type="text" placeholder="Correr, Estudar..." />
-                    <button type="submit" aria-label="Adicionar novo item">
-                        +
-                    </button>
-                </form>
-            </header>
+interface HomeObjeto {
+  id: string;
+  content: string;
+}
 
-            <section>
-                <form>
-                    <input
-                        type="text"
-                        placeholder="Filtrar lista atual, ex: Dentista"
-                    />
-                </form>
+function HomePage() {
+  const [page, setPage] = React.useState(1);
+  const [objetos, setObjetos] = React.useState<HomeObjeto[]>([]);
 
-                <table border={1}>
-                    <thead>
-                        <tr>
-                            <th align="left">
-                                <input type="checkbox" disabled />
-                            </th>
-                            <th align="left">Id</th>
-                            <th align="left">Conteúdo</th>
-                            <th />
-                        </tr>
-                    </thead>
+  //Load info onload
+  React.useEffect(() => {
+    objetoController.get({ page }).then(({ objetos }) => {
+      setObjetos(objetos);
+    });
+  }, []);
 
-                    <tbody>
-                        <tr>
-                            <td>
-                                <input type="checkbox" />
-                            </td>
-                            <td>d4f26</td>
-                            <td>
-                                Conteúdo de uma TODO Lorem ipsum dolor sit amet
-                                consectetur adipisicing elit. Eaque vero facilis
-                                obcaecati, autem aliquid eius! Consequatur eaque
-                                doloribus laudantium soluta optio odit,
-                                provident, ab voluptates doloremque voluptas
-                                recusandae aspernatur aperiam.
-                            </td>
-                            <td align="right">
-                                <button data-type="delete">Apagar</button>
-                            </td>
-                        </tr>
+  return (
+    <main>
+      <GlobalStyles themeName="devsoutinho" />
+      <header
+        style={{
+          backgroundImage: `url('${bg}')`,
+        }}
+      >
+        <div className="typewriter">
+          <h1>O que fazer hoje?</h1>
+        </div>
+        <form>
+          <input type="text" placeholder="Correr, Estudar..." />
+          <button type="submit" aria-label="Adicionar novo item">
+            +
+          </button>
+        </form>
+      </header>
 
-                        <tr>
+      <section>
+        <form>
+          <input type="text" placeholder="Filtrar lista atual, ex: Dentista" />
+        </form>
+
+        <table border={1}>
+          <thead>
+            <tr>
+              <th align="left">
+                <input type="checkbox" disabled />
+              </th>
+              <th align="left">Id</th>
+              <th align="left">Conteúdo</th>
+              <th />
+            </tr>
+          </thead>
+
+          <tbody>
+            {objetos.map((curentObject) => {
+              return (
+                <tr key={curentObject.id}>
+                  <td>
+                    <input type="checkbox" />
+                  </td>
+                  <td>{curentObject.id.substring(0, 4)}</td>
+                  <td>{curentObject.content}</td>
+                  <td align="right">
+                    <button data-type="delete">Apagar</button>
+                  </td>
+                </tr>
+              );
+            })}
+
+            {/* <tr>
                             <td
                                 colSpan={4}
                                 align="center"
@@ -70,37 +80,40 @@ export default function Page() {
                             >
                                 Carregando...
                             </td>
-                        </tr>
+                        </tr> */}
 
-                        <tr>
+            {/* <tr>
                             <td colSpan={4} align="center">
                                 Nenhum item encontrado
                             </td>
-                        </tr>
+                        </tr> */}
 
-                        <tr>
-                            <td
-                                colSpan={4}
-                                align="center"
-                                style={{ textAlign: "center" }}
-                            >
-                                <button data-type="load-more">
-                                    Carregar mais{" "}
-                                    <span
-                                        style={{
-                                            display: "inline-block",
-                                            marginLeft: "4px",
-                                            fontSize: "1.2em",
-                                        }}
-                                    >
-                                        ↓
-                                    </span>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </section>
-        </main>
-    );
+            <tr>
+              <td colSpan={4} align="center" style={{ textAlign: "center" }}>
+                <button
+                  data-type="load-more"
+                  onClick={() => {
+                    setPage(page + 1);
+                  }}
+                >
+                  Pagina {page} Carregar mais{" "}
+                  <span
+                    style={{
+                      display: "inline-block",
+                      marginLeft: "4px",
+                      fontSize: "1.2em",
+                    }}
+                  >
+                    ↓
+                  </span>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </main>
+  );
 }
+
+export default HomePage;
